@@ -1,0 +1,32 @@
+[project]
+name = "lc-wiki-graph"
+version = "0.0.1"
+authors = [{ name = "283375", email = "log_283375@163.com" }]
+description = "bruh"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["matplotlib==3.8.3", "PyYAML==6.0.1", "unityparser==4.0.0"]
+classifiers = ["Programming Language :: Python :: 3"]
+
+[project.urls]
+"Homepage" = "https://github.com/283375/lc-wiki-graph"
+"Bug Tracker" = "https://github.com/283375/lc-wiki-graph/issues"
+
+[tool.isort]
+profile = "black"
+
+# In case you (actually I) forgot, you may get a full list of pylint config by running
+# $ pylint --disable=invalid-name --generate-toml-config > pylint.toml
+[tool.pylint.basic]
+argument-naming-style = "camelCase"
+attr-naming-style = "camelCase"
+class-const-naming-style = "UPPER_CASE"
+class-naming-style = "PascalCase"
+const-naming-style = "UPPER_CASE"
+function-naming-style = "camelCase"
+method-naming-style = "camelCase"
+module-naming-style = "camelCase"
+variable-naming-style = "camelCase"
+
+[tool.pylint."messages control"]
+disable = []
