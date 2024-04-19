@@ -16,7 +16,7 @@ Then, create a `.env` file. Specify the `GAME_EXTRACT_ROOT` variable to the path
 GAME_EXTRACT_ROOT=X:/Game Extract
 ```
 
-Finally, ensure there's a folder named `outputs` in the project root. You're now good to go.
+Finally, ensure there are folders named `outputs` and `caches` in the project root directory. You're now good to go.
 
 ## Radar pip sizes graph
 

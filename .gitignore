@@ -2,6 +2,8 @@ Game Extracts/
 .vscode/
 outputs/*
 !outputs/.gitkeep
+caches/*
+!caches/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

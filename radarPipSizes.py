@@ -1,7 +1,11 @@
 import logging
 import math
 import os
+import pickle
+import pprint
 import sys
+from dataclasses import dataclass
+from decimal import Decimal
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -19,40 +23,77 @@ if TYPE_CHECKING:
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 load_dotenv()
 
-GAME_EXTRACT_ROOT = os.environ.get("GAME_EXTRACT_ROOT")
 
-if GAME_EXTRACT_ROOT is None:
-    logging.critical("GAME_EXTRACT_ROOT not set, exitting")
-    sys.exit(1)
+@dataclass
+class PlotData:
+    """Plot data cache"""
 
-PREFAB_ROOT = Path(GAME_EXTRACT_ROOT) / "ExportedProject" / "Assets" / "PrefabInstance"
+    pipSizes: dict[str, Decimal]
 
-IGNORE_LIST = [
-    "MaskedPlayerEnemy",
-    "Player",
-    "PlayerRagdoll",
-    "PlayerRagdollBurnt Variant",
-    "PlayerRagdollElectrocuted Variant",
-    "PlayerRagdollHeadBurst Variant",
-    "PlayerRagdollSpring Variant",
-    "PlayerRagdollWithComedyMask Variant",
-    "PlayerRagdollWithTragedyMask Variant",
-    "RadMechNestSpawnObject",
-]
 
-prefabFilePaths: list[Path] = []
+PLOT_DATA: PlotData | None = None
+CACHE_FILE = Path("./caches/radarPipSizes.pickle")
 
-for path in PREFAB_ROOT.glob("*.prefab"):
-    if path.stem in IGNORE_LIST:
-        continue
+if CACHE_FILE.exists():
+    logging.info("Loading previous cache from %s", CACHE_FILE)
+    logging.info(
+        "If the game extract files have been updated, delete that cache and rerun this script."
+    )
+    with open(CACHE_FILE, "rb") as f:
+        PLOT_DATA = pickle.load(f)
+else:
+    logging.info("No cache found, loading from game extractions...")
 
-    with open(path, encoding="utf-8") as f:
-        fileContent = f.read()
-        if "MapDot" in fileContent:
-            prefabFilePaths.append(path)
+    GAME_EXTRACT_ROOT = os.environ.get("GAME_EXTRACT_ROOT")
 
-logging.info("Prefabs found: %r", [path.stem for path in prefabFilePaths])
+    if GAME_EXTRACT_ROOT is None:
+        logging.critical("GAME_EXTRACT_ROOT not set, exitting")
+        sys.exit(1)
 
+    PREFAB_ROOT = (
+        Path(GAME_EXTRACT_ROOT) / "ExportedProject" / "Assets" / "PrefabInstance"
+    )
+
+    IGNORE_LIST = [
+        "MaskedPlayerEnemy",
+        "Player",
+        "PlayerRagdoll",
+        "PlayerRagdollBurnt Variant",
+        "PlayerRagdollElectrocuted Variant",
+        "PlayerRagdollHeadBurst Variant",
+        "PlayerRagdollSpring Variant",
+        "PlayerRagdollWithComedyMask Variant",
+        "PlayerRagdollWithTragedyMask Variant",
+        "RadMechNestSpawnObject",
+    ]
+
+    prefabFilePaths: list[Path] = []
+
+    for path in PREFAB_ROOT.glob("*.prefab"):
+        if path.stem in IGNORE_LIST:
+            continue
+
+        with open(path, "r", encoding="utf-8") as f:
+            fileContent = f.read()
+            if "MapDot" in fileContent:
+                prefabFilePaths.append(path)
+
+    logging.info("Prefabs found: %r", [path.stem for path in prefabFilePaths])
+    logging.info("Loading pip sizes...")
+
+    pipSizes = {}
+    for path in prefabFilePaths:
+        pipSizes[path.stem] = getPipSize(path)
+    PLOT_DATA = PlotData(pipSizes)
+
+    logging.info("Generating caches...")
+    with open(CACHE_FILE, "wb") as f:
+        pickle.dump(PLOT_DATA, f)
+
+
+assert PLOT_DATA is not None
+
+logging.info("Breif report of loaded data: %s", pprint.pformat(PLOT_DATA.pipSizes))
 logging.info("Plotting...")
 
 
@@ -60,7 +101,7 @@ BASE_IMG = plt.imread("./assets/RadarPipSizeBase.png")
 BACKGROUND_COLOR = "black"
 TEXT_COLOR = (0, 0.886, 0.898)
 N_COLS = 5
-N_ROWS = math.ceil(len(prefabFilePaths) / N_COLS)
+N_ROWS = math.ceil(len(PLOT_DATA.pipSizes) / N_COLS)
 fig, axs = plt.subplots(N_ROWS, N_COLS, figsize=(9, 5), dpi=200)
 
 fig.patch.set_facecolor(BACKGROUND_COLOR)
@@ -72,23 +113,18 @@ for ax in axs.flatten():
     ax.set_aspect("auto")
     ax.set_facecolor(BACKGROUND_COLOR)
 
-for i, path in enumerate(prefabFilePaths):
+for i, item in enumerate(PLOT_DATA.pipSizes.items()):
+    filename, pipSize = item
+
     currentRow = i // N_COLS
     currentCol = i % N_COLS
 
     ax: "Axes" = axs[currentRow][currentCol]
-    ax.set_title(
-        filenameToTitle(path.stem),
-        font=fontPath,
-        color=TEXT_COLOR,
-        size=14,
-    )
+    ax.set_title(filenameToTitle(filename), font=fontPath, color=TEXT_COLOR, size=14)
 
     img = BASE_IMG.copy()
 
-    entityPipSize = getPipSize(path)
-    assert entityPipSize is not None
-    plotCircleRadius = entityPipSize * 10
+    plotCircleRadius = pipSize * 10
 
     yLimBottom = min(80, math.ceil(150 - plotCircleRadius)) - 10
     yLimTop = max(230, math.ceil(150 + plotCircleRadius)) + 10
