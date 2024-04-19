@@ -1,3 +1,5 @@
+# pylint: disable=c-extension-no-member
+
 import logging
 import math
 import pprint
@@ -5,6 +7,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
+from lxml import etree
+from lxml.etree import _Element, _ElementTree  # pylint: disable=no-name-in-module
 from matplotlib import patches
 
 from scripts import filenameToTitle
@@ -71,3 +75,32 @@ def plotSummary(
 
     fig.tight_layout()
     return fig
+
+
+def generateSeparateIcons(plotCache: PlotCache) -> dict[str, _ElementTree]:
+    namespaceMap = {"svg": "http://www.w3.org/2000/svg"}
+
+    returnDict = {}
+
+    parser = etree.XMLParser(encoding="utf-8")
+
+    for filenameStem, pipSize in plotCache.pipSizes.items():
+        root = etree.parse("./assets/RadarPipSizeSeparateBase.svg", parser=parser)
+        assert isinstance(root, _ElementTree)
+
+        enemyMapDot = root.xpath(
+            r"//svg:ellipse[@id='path4']", namespaces=namespaceMap
+        )[0]
+        assert isinstance(enemyMapDot, _Element)
+
+        enemyMapDot.attrib["rx"] = str(pipSize.x)
+        enemyMapDot.attrib["ry"] = str(pipSize.z)
+
+        stem = f"{filenameToTitle(filenameStem)}"
+        stem = stem.replace("!", "_")
+        stem = stem.replace(" ", "")
+        filename = f"RadarPipSize_{stem}.svg"
+
+        returnDict[filename] = root
+
+    return returnDict

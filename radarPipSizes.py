@@ -10,6 +10,7 @@ from scripts.data import getPipSize
 from scripts.plot.radarPipSizes import (
     CACHE_FILE,
     PlotCache,
+    generateSeparateIcons,
     load_cache,
     plotSummary,
     write_cache,
@@ -82,6 +83,18 @@ assert PLOT_CACHE is not None
 logging.info("Breif report of loaded data:\n%s", pprint.pformat(PLOT_CACHE.pipSizes))
 logging.info("Plotting...")
 
+OUTPUT_PATH = Path("./outputs")
 
 fig = plotSummary(PLOT_CACHE)
-fig.savefig("./outputs/radarPipSizes.png")
+fig.savefig(OUTPUT_PATH / "radarPipSizes.png")
+
+logging.info("Generating separate icons")
+
+SEPARATE_ICONS_OUTPUT_PATH = OUTPUT_PATH / "radarPipSizes"
+SEPARATE_ICONS_OUTPUT_PATH.mkdir(parents=False, exist_ok=True)
+
+icons = generateSeparateIcons(PLOT_CACHE)
+
+for filename, elementRoot in icons.items():
+    with open(SEPARATE_ICONS_OUTPUT_PATH / filename, "wb") as f:
+        elementRoot.write(f)

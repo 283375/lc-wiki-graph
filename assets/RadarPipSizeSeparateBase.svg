@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="30"
+   height="30"
+   viewBox="0 0 30 30.000002"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   sodipodi:docname="SeparateBase.svg"
+   inkscape:export-filename="Base.png"
+   inkscape:export-xdpi="960"
+   inkscape:export-ydpi="960"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="16"
+     inkscape:cx="8.71875"
+     inkscape:cy="13.34375"
+     inkscape:current-layer="layer1"
+     showguides="true">
+    <sodipodi:guide
+       position="15.000001,15.000001"
+       orientation="0,1"
+       id="guide2"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="5.0000002,15.000001"
+       orientation="-1,0"
+       id="guide3"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="图层 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="display:inline;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke-width:5;stroke-linecap:square;stroke-miterlimit:50;paint-order:markers stroke fill"
+       id="rect1"
+       width="30"
+       height="30"
+       x="0"
+       y="0"
+       inkscape:label="bg" />
+    <ellipse
+       style="display:inline;fill:#ff000d;fill-opacity:1;fill-rule:evenodd;stroke-width:5;stroke-linecap:square;stroke-miterlimit:50;paint-order:markers stroke fill"
+       id="path4"
+       cx="15"
+       cy="15"
+       inkscape:label="enemyMapDot"
+       rx="14"
+       ry="14" />
+    <g
+       id="g4"
+       inkscape:label="player"
+       transform="translate(-5,4.9999995)">
+      <path
+         id="path2"
+         style="fill:#0068ff;fill-opacity:1;fill-rule:evenodd;stroke-width:5;stroke-linecap:square;stroke-miterlimit:50;paint-order:markers stroke fill"
+         d="m 14.864927,15.709746 c 0.326588,-0.27893 0.633618,-0.589847 0.916615,-0.932325 2.638497,-3.193058 2.188937,-7.9204676 -1.004121,-10.5589649 L 11.784068,7.840954 c 1.19282,0.985095 1.360736,2.750843 0.374976,3.943113 -0.10565,0.127928 -0.22028,0.244068 -0.342218,0.34826 z"
+         sodipodi:nodetypes="csccccc"
+         inkscape:label="playerViewIndicator"
+         inkscape:transform-center-x="-4.6421365"
+         inkscape:transform-center-y="-0.035898164" />
+      <circle
+         style="fill:#0068ff;fill-opacity:1;fill-rule:evenodd;stroke-width:5;stroke-linecap:square;stroke-miterlimit:50;paint-order:markers stroke fill"
+         id="path1"
+         cx="10"
+         cy="10"
+         inkscape:label="playerMapDot"
+         r="1.64" />
+    </g>
+  </g>
+</svg>
