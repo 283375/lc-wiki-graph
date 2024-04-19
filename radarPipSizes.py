@@ -76,18 +76,20 @@ TITLE_MAPPING = {
 }
 
 BASE_IMG = plt.imread("./assets/RadarPipSizeBase.png")
+BACKGROUND_COLOR = "black"
+TEXT_COLOR = (0, 0.886, 0.898)
 N_COLS = 5
 N_ROWS = math.ceil(len(prefabFilePaths) / N_COLS)
 fig, axs = plt.subplots(N_ROWS, N_COLS, figsize=(9, 5), dpi=200)
 
-fig.patch.set_facecolor("black")
-matplotlib.rcParams["text.color"] = "white"
+fig.patch.set_facecolor(BACKGROUND_COLOR)
+matplotlib.rcParams["text.color"] = TEXT_COLOR
 fontPath = Path("./assets/3270-Regular.ttf")
 
 for ax in axs.flatten():
     ax.set_axis_off()
     ax.set_aspect("auto")
-    ax.set_facecolor("black")
+    ax.set_facecolor(BACKGROUND_COLOR)
 
 for i, path in enumerate(prefabFilePaths):
     currentRow = i // N_COLS
@@ -97,7 +99,7 @@ for i, path in enumerate(prefabFilePaths):
     ax.set_title(
         TITLE_MAPPING.get(path.stem, f"!! {path.stem} !!"),
         font=fontPath,
-        color="white",
+        color=TEXT_COLOR,
         size=14,
     )
 
