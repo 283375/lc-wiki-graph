@@ -1,45 +1,33 @@
 import logging
-import math
 import os
-import pickle
 import pprint
 import sys
-from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
 
-import matplotlib
-import matplotlib.patches as patches
-import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
-from scripts import filenameToTitle
-from scripts.data import PipSize, getPipSize
-
-if TYPE_CHECKING:
-    from matplotlib.axes import Axes
+from scripts.data import getPipSize
+from scripts.plot.radarPipSizes import (
+    CACHE_FILE,
+    PlotCache,
+    load_cache,
+    plotSummary,
+    write_cache,
+)
 
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 load_dotenv()
 
 
-@dataclass
-class PlotData:
-    """Plot data cache"""
-
-    pipSizes: dict[str, PipSize]
-
-
-PLOT_DATA: PlotData | None = None
-CACHE_FILE = Path("./caches/radarPipSizes.pickle")
+PLOT_CACHE: PlotCache | None = None
 
 if CACHE_FILE.exists():
-    logging.info("Loading previous cache from %s", CACHE_FILE)
-    logging.info(
-        "If the game extract files have been updated, delete that cache and rerun this script."
-    )
-    with open(CACHE_FILE, "rb") as f:
-        PLOT_DATA = pickle.load(f)
+    try:
+        PLOT_CACHE = load_cache()
+    except Exception:  # pylint: disable=broad-exception-caught
+        logging.exception("Error loading cache from %s", CACHE_FILE)
+        logging.info("HINT: You can try deleting that cache, then rerun this script.")
+        sys.exit(1)
 else:
     logging.info("No cache found, loading from game extractions...")
 
@@ -83,61 +71,17 @@ else:
     pipSizes = {}
     for path in prefabFilePaths:
         pipSizes[path.stem] = getPipSize(path)
-    PLOT_DATA = PlotData(pipSizes)
+    PLOT_CACHE = PlotCache(pipSizes)
 
-    logging.info("Generating caches...")
-    with open(CACHE_FILE, "wb") as f:
-        pickle.dump(PLOT_DATA, f)
+    logging.info("Writing cache...")
+    write_cache(PLOT_CACHE)
 
 
-assert PLOT_DATA is not None
+assert PLOT_CACHE is not None
 
-logging.info("Breif report of loaded data: %s", pprint.pformat(PLOT_DATA.pipSizes))
+logging.info("Breif report of loaded data:\n%s", pprint.pformat(PLOT_CACHE.pipSizes))
 logging.info("Plotting...")
 
 
-BASE_IMG = plt.imread("./assets/RadarPipSizeBase.png")
-BACKGROUND_COLOR = "black"
-TEXT_COLOR = (0, 0.886, 0.898)
-N_COLS = 5
-N_ROWS = math.ceil(len(PLOT_DATA.pipSizes) / N_COLS)
-fig, axs = plt.subplots(N_ROWS, N_COLS, figsize=(9, 5), dpi=200)
-
-fig.patch.set_facecolor(BACKGROUND_COLOR)
-matplotlib.rcParams["text.color"] = TEXT_COLOR
-fontPath = Path("./assets/3270-Regular.ttf")
-
-for ax in axs.flatten():
-    ax.set_axis_off()
-    ax.set_aspect("auto")
-    ax.set_facecolor(BACKGROUND_COLOR)
-
-for i, item in enumerate(PLOT_DATA.pipSizes.items()):
-    filename, pipSize = item
-
-    currentRow = i // N_COLS
-    currentCol = i % N_COLS
-
-    ax: "Axes" = axs[currentRow][currentCol]
-    ax.set_title(filenameToTitle(filename), font=fontPath, color=TEXT_COLOR, size=14)
-
-    img = BASE_IMG.copy()
-
-    plotEllipseWidth = pipSize.x * 10 * 2
-    plotEllipseHeight = pipSize.z * 10 * 2
-
-    yLimBottom = min(80, math.ceil(150 - plotEllipseHeight / 2)) - 10
-    yLimTop = max(230, math.ceil(150 + plotEllipseHeight / 2)) + 10
-    ax.set_ylim(yLimBottom, yLimTop)
-    entityPipCircle = patches.Ellipse(
-        (150, 150),
-        width=float(plotEllipseWidth),
-        height=float(plotEllipseHeight),
-        color=(1, 0, 0.052129745),
-    )
-
-    ax.imshow(img)
-    ax.add_patch(entityPipCircle)
-
-fig.tight_layout()
+fig = plotSummary(PLOT_CACHE)
 fig.savefig("./outputs/radarPipSizes.png")
