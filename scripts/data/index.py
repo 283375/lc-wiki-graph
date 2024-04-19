@@ -1,13 +1,24 @@
 import logging
 from decimal import Decimal
 from pathlib import Path
+from typing import NamedTuple
 
 from unityparser import UnityDocument
 
 logger = logging.getLogger(__name__)
 
 
-def getPipSize(prefabFile: str | Path) -> Decimal | None:
+class PipSize(NamedTuple):
+    x: Decimal
+    z: Decimal
+
+
+def getPipSize(prefabFile: str | Path) -> PipSize | None:
+    """
+    If the input prefab file contains radar pip size definitions, returns it.
+    Otherwise, returns `None`.
+    """
+
     if isinstance(prefabFile, Path):
         filepath = prefabFile
     else:
@@ -66,9 +77,11 @@ def getPipSize(prefabFile: str | Path) -> Decimal | None:
     mapDotTransformScale = mapDotTransform.m_LocalScale
     mapDotTransformFatherScale = mapDotTransformFather.m_LocalScale
 
-    if mapDotTransformScale["x"] != mapDotTransformScale["z"]:
-        logger.warning("MapDot Transform (child) x != z !!")
-    if mapDotTransformFatherScale["x"] != mapDotTransformFatherScale["z"]:
-        logger.warning("MapDot Transform (father) x != z !!")
+    pipSizeX = Decimal(mapDotTransformScale["x"]) * Decimal(
+        mapDotTransformFatherScale["x"]
+    )
+    pipSizeZ = Decimal(mapDotTransformScale["z"]) * Decimal(
+        mapDotTransformFatherScale["z"]
+    )
 
-    return Decimal(mapDotTransformScale["x"]) * Decimal(mapDotTransformFatherScale["x"])
+    return PipSize(x=pipSizeX, z=pipSizeZ)

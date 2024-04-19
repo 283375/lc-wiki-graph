@@ -1,1 +1,1 @@
-from .index import getPipSize
+from .index import PipSize, getPipSize

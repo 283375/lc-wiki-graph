@@ -5,7 +5,6 @@ import pickle
 import pprint
 import sys
 from dataclasses import dataclass
-from decimal import Decimal
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -15,7 +14,7 @@ import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
 from scripts import filenameToTitle
-from scripts.data import getPipSize
+from scripts.data import PipSize, getPipSize
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
@@ -28,7 +27,7 @@ load_dotenv()
 class PlotData:
     """Plot data cache"""
 
-    pipSizes: dict[str, Decimal]
+    pipSizes: dict[str, PipSize]
 
 
 PLOT_DATA: PlotData | None = None
@@ -124,13 +123,17 @@ for i, item in enumerate(PLOT_DATA.pipSizes.items()):
 
     img = BASE_IMG.copy()
 
-    plotCircleRadius = pipSize * 10
+    plotEllipseWidth = pipSize.x * 10 * 2
+    plotEllipseHeight = pipSize.z * 10 * 2
 
-    yLimBottom = min(80, math.ceil(150 - plotCircleRadius)) - 10
-    yLimTop = max(230, math.ceil(150 + plotCircleRadius)) + 10
+    yLimBottom = min(80, math.ceil(150 - plotEllipseHeight / 2)) - 10
+    yLimTop = max(230, math.ceil(150 + plotEllipseHeight / 2)) + 10
     ax.set_ylim(yLimBottom, yLimTop)
-    entityPipCircle = patches.Circle(
-        (150, 150), float(plotCircleRadius), color=(1, 0, 0.052129745)
+    entityPipCircle = patches.Ellipse(
+        (150, 150),
+        width=float(plotEllipseWidth),
+        height=float(plotEllipseHeight),
+        color=(1, 0, 0.052129745),
     )
 
     ax.imshow(img)
