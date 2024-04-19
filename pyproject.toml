@@ -14,6 +14,7 @@ classifiers = ["Programming Language :: Python :: 3"]
 
 [tool.isort]
 profile = "black"
+extend_skip_glob = ["venv/*", "Game Extracts/*"]
 
 # In case you (actually I) forgot, you may get a full list of pylint config by running
 # $ pylint --disable=invalid-name --generate-toml-config > pylint.toml
