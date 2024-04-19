@@ -6,10 +6,12 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import matplotlib
+import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
-from scripts.getPipSize import getPipSize
+from scripts import filenameToTitle
+from scripts.data import getPipSize
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
@@ -53,27 +55,6 @@ logging.info("Prefabs found: %r", [path.stem for path in prefabFilePaths])
 
 logging.info("Plotting...")
 
-TITLE_MAPPING = {
-    "BaboonHawkEnemy": "Baboon Hawk",
-    "Blob": "Hygrodere",
-    "ButlerEnemy": "Butler",
-    "Centipede": "Snare Flea",
-    "Crawler": "Thumper",
-    "DoublewingedBird": "Manticoil",
-    "Flowerman": "Bracken",
-    "FlowerSnakeEnemy": "Tulip Snake",
-    "ForestGiant": "Forest Keeper",
-    "HoarderBug": "Hoarding Bug",
-    "JesterEnemy": "Jester",
-    "LassoMan": "Lasso Man",
-    "MouthDog": "Eyeless Dog",
-    "NutcrackerEnemy": "Nutcracker",
-    "PufferEnemy": "Spore Lizard",
-    "RadMechEnemy": "Old Bird",
-    "SandSpider": "Bunker Spider",
-    "SandWorm": "Earth Leviathan",
-    "SpringMan": "Coil-Head",
-}
 
 BASE_IMG = plt.imread("./assets/RadarPipSizeBase.png")
 BACKGROUND_COLOR = "black"
@@ -97,7 +78,7 @@ for i, path in enumerate(prefabFilePaths):
 
     ax: "Axes" = axs[currentRow][currentCol]
     ax.set_title(
-        TITLE_MAPPING.get(path.stem, f"!! {path.stem} !!"),
+        filenameToTitle(path.stem),
         font=fontPath,
         color=TEXT_COLOR,
         size=14,
@@ -112,7 +93,7 @@ for i, path in enumerate(prefabFilePaths):
     yLimBottom = min(80, math.ceil(150 - plotCircleRadius)) - 10
     yLimTop = max(230, math.ceil(150 + plotCircleRadius)) + 10
     ax.set_ylim(yLimBottom, yLimTop)
-    entityPipCircle = plt.Circle(
+    entityPipCircle = patches.Circle(
         (150, 150), float(plotCircleRadius), color=(1, 0, 0.052129745)
     )
 
