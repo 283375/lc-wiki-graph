@@ -20,6 +20,9 @@ TITLE_MAPPING = {
     "SandSpider": "Bunker Spider",
     "SandWorm": "Earth Leviathan",
     "SpringMan": "Coil-Head",
+    "ClaySurgeon": "Barber",
+    "BushWolfEnemy": "Kidnapper Fox",
+    "CaveDwellerEnemy": "Maneater",
 }
 
 

@@ -52,6 +52,9 @@ else:
         "PlayerRagdollSpring Variant",
         "PlayerRagdollWithComedyMask Variant",
         "PlayerRagdollWithTragedyMask Variant",
+        "PlayerRagdollHeadGone Variant",
+        "PlayerRagdollSlicedInHalf Variant",
+        "TestRoom",
         "RadMechNestSpawnObject",
     ]
 
