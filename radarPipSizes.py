@@ -2,11 +2,15 @@ import logging
 import os
 import pprint
 import sys
+from decimal import Decimal
 from pathlib import Path
 
 from dotenv import load_dotenv
+from matplotlib import font_manager
 
+from scripts import SORT_LIST
 from scripts.data import getPipSize
+from scripts.data.index import PipSize
 from scripts.plot.radarPipSizes import (
     CACHE_FILE,
     PlotCache,
@@ -38,12 +42,9 @@ else:
         logging.critical("GAME_EXTRACT_ROOT not set, exitting")
         sys.exit(1)
 
-    PREFAB_ROOT = (
-        Path(GAME_EXTRACT_ROOT) / "ExportedProject" / "Assets" / "PrefabInstance"
-    )
+    PREFAB_ROOT = Path(GAME_EXTRACT_ROOT) / "ExportedProject" / "Assets" / "GameObject"
 
     IGNORE_LIST = [
-        "MaskedPlayerEnemy",
         "Player",
         "PlayerRagdoll",
         "PlayerRagdollBurnt Variant",
@@ -56,6 +57,8 @@ else:
         "PlayerRagdollSlicedInHalf Variant",
         "TestRoom",
         "RadMechNestSpawnObject",
+        "PlayerRagdollFlowers Variant",
+        "PlayerRagdollScratched Variant",
     ]
 
     prefabFilePaths: list[Path] = []
@@ -74,7 +77,29 @@ else:
 
     pipSizes = {}
     for path in prefabFilePaths:
-        pipSizes[path.stem] = getPipSize(path)
+        if path.stem in {"MaskedPlayerEnemy", "CadaverBloomBurstEnemy"}:
+            pipSize = PipSize(
+                x=Decimal(0.0),
+                z=Decimal(0.0),
+                shouldRenderPlayer=True,
+                playerOffset=Decimal(80),
+                playerRotation=180,
+            )
+        else:
+            pipSize = getPipSize(path)
+
+        if pipSize is None:
+            logging.warning("Pip size not found for %s", path)
+            continue
+
+        if path.stem == "CGrowthsScanNode":
+            pipSize = pipSize._replace(shouldRenderPlayer=True)
+
+        pipSizes[path.stem] = pipSize
+
+    # sort dict by keys, use sorted
+    pipSizes = dict(sorted(pipSizes.items(), key=lambda kv: SORT_LIST.index(kv[0])))
+
     PLOT_CACHE = PlotCache(pipSizes)
 
     logging.info("Writing cache...")
@@ -88,7 +113,16 @@ logging.info("Plotting...")
 
 OUTPUT_PATH = Path("./outputs")
 
+font_manager.fontManager.addfont("./assets/3270-Regular.ttf")
 fig = plotSummary(PLOT_CACHE)
+fig.text(
+    0.005,
+    0.01,
+    "v81",
+    fontsize="xx-large",
+    color=(253 / 255, 90 / 255, 23 / 255),
+    fontproperties=font_manager.FontProperties(fname="./assets/3270-Regular.ttf"),
+)
 fig.savefig(OUTPUT_PATH / "radarPipSizes.png")
 
 logging.info("Generating separate icons")

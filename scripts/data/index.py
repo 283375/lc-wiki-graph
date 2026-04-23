@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 class PipSize(NamedTuple):
     x: Decimal
     z: Decimal
+    shouldRenderPlayer: bool = False
+    playerOffset: Decimal = Decimal(0)
+    playerRotation: int = 0
 
 
 def getPipSize(prefabFile: str | Path) -> PipSize | None:

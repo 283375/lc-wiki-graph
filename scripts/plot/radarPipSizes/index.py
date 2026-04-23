@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from lxml import etree
 from lxml.etree import _Element, _ElementTree  # pylint: disable=no-name-in-module
 from matplotlib import patches
+from PIL import Image
 
 from scripts import filenameToTitle
 
@@ -70,7 +71,18 @@ def plotSummary(
             color=(1, 0, 0.052129745),
         )
 
+        basePlayerImage = Image.new("RGBA", [300, 300])
+        playerImage = Image.open("./assets/RadarPipSize-Player.png")
+        playerImage = playerImage.convert("RGBA")
+        if pipSize.playerRotation:
+            playerImage = playerImage.rotate(pipSize.playerRotation)
+        basePlayerImage.paste(playerImage, (int(pipSize.playerOffset), 0))
+
         ax.imshow(img)
+
+        if pipSize.shouldRenderPlayer:
+            ax.imshow(basePlayerImage)
+
         ax.add_patch(entityPipCircle)
 
     fig.tight_layout()

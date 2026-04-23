@@ -11,6 +11,7 @@ dependencies = [
     "unityparser~=4.0.0",
     "lxml~=6.1.0",
     "python-dotenv>=1.2.2",
+    "pillow>=12.2.0",
 ]
 classifiers = ["Programming Language :: Python :: 3"]
 

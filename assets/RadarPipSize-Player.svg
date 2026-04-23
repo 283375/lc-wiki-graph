@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="600"
+   height="600"
+   viewBox="0 0 600 600"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   sodipodi:docname="RadarPipSize-Player.svg"
+   inkscape:export-filename="RadarPipSize-Player.png"
+   inkscape:export-xdpi="48"
+   inkscape:export-ydpi="48"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="1"
+     inkscape:cx="329.5"
+     inkscape:cy="284.5"
+     inkscape:current-layer="layer1"
+     showguides="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="图层 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="scale(20)">
+    <g
+       id="g4"
+       inkscape:label="player"
+       transform="translate(5,5)">
+      <path
+         id="path2"
+         style="fill:#0068ff;fill-opacity:1;fill-rule:evenodd;stroke-width:5;stroke-linecap:square;stroke-miterlimit:50;paint-order:markers stroke fill"
+         d="m 14.864927,15.709746 c 0.326588,-0.27893 0.633618,-0.589847 0.916615,-0.932325 2.638497,-3.193058 2.188937,-7.9204676 -1.004121,-10.5589649 L 11.784068,7.840954 c 1.19282,0.985095 1.360736,2.750843 0.374976,3.943113 -0.10565,0.127928 -0.22028,0.244068 -0.342218,0.34826 z"
+         sodipodi:nodetypes="csccccc"
+         inkscape:label="playerViewIndicator"
+         inkscape:transform-center-x="-4.6421365"
+         inkscape:transform-center-y="-0.035898164" />
+      <circle
+         style="fill:#0068ff;fill-opacity:1;fill-rule:evenodd;stroke-width:5;stroke-linecap:square;stroke-miterlimit:50;paint-order:markers stroke fill"
+         id="path1"
+         cx="10"
+         cy="10"
+         inkscape:label="playerMapDot"
+         r="1.64" />
+    </g>
+  </g>
+</svg>
